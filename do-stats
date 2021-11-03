@@ -1,0 +1,38 @@
+#!/bin/bash
+fg="$1"
+[ -z "$1" ] && fg="00 /"
+
+echo "filter: $fg"
+
+echo -e "all                               nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|./stats -; done
+
+echo -e "\nforward sorted                    nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep  ' sorted'|./stats -; done
+
+echo -e "\nnot forward sorted or plateau     nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep -v ' sorted'|grep -v 'plateau'|./stats -; done
+
+echo -e "\nreverse sorted:                   nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep  'reverse_sorted'|./stats -; done
+
+echo -e "\nrand                              nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep rand|./stats -; done
+
+echo -e "\nrand, not forw/rev sorted:        nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep rand|grep -v sorted|./stats -; done
+
+echo -e "\nshuffle ident:                    nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep 'shuffle[ ]*ident'|./stats -; done
+
+echo -e "\nsawtooth ident:                   nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep 'sawtooth[ ]*ident'|./stats -; done
+
+echo -e "\nstagger ident:                    nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep 'stagger[ ]*ident'|./stats -; done
+
+echo -e "\nstrings:                          nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep 'strings'|./stats -; done
+
+echo -e "\nstrings, not forward sorted:      nrec     % speedup     is faster     cmp ratio"
+for l in $log; do echo -en "  $l:   \t"; grep "$fg" $l|grep 'strings'|grep -v ' sorted'|./stats -; done

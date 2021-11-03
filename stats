@@ -1,0 +1,49 @@
+#!/bin/bash
+for log in "$@"
+do
+    awk '
+        BEGIN {
+            sum_msec_ratio=0; sumsq=0; nr=0; 
+            sum_new_cmp=0; sum_std_cmp=0; sum_cmp_ratio=0; nr_cmp=0; nover=0; 
+            sum_new_msec = 0; sum_std_msec = 0;
+            sum_size = 0; sum_new_runs = 0; sum_std_runs = 0;
+            sum_new_len=0; sum_std_len=0;
+            sum_new_time=0; sum_std_time=0;
+            sum_copy_ratio=0; nr_copy=0;
+            min_new_time=1000; min_std_time=1000;
+        }
+        {
+            if ($NF != "new/std" ) {
+                sum_msec_ratio+=$NF; sumsq+=$NF*$NF; nr++;
+                if ($NF >= 1) {
+                    nover++;
+                }
+                sum_new_cmp+=$9; sum_std_cmp+=$10; if ($10 > 0) { sum_cmp_ratio+=$9/$10; nr_cmp++; }
+                sum_new_msec+=$11; sum_std_msec+=$12;
+                all_new_msec[nr]=$11; all_std_msec[nr]=$12;
+                sum_size+=$3; sum_new_runs+=$7; sum_std_runs+=$8;
+                sum_new_len+=$3*$7; sum_std_len+=$3*$8;
+                new_time=($3*$7/1000000)/$11;
+                std_time=($3*$8/1000000)/$12;
+                sum_new_time+=new_time; sum_std_time+=std_time;
+                if (new_time < 0.124 && std_time < 0.124 && $7 > 1 && $8 > 1) {
+                    sum_copy_ratio+=((0.125-new_time)/($7-1))/((0.125-std_time)/($8-1)); nr_copy++;
+                }
+                if (new_time < min_new_time) { min_new_time = new_time; }
+                if (std_time < min_std_time) { min_std_time = std_time; }
+            }
+        }
+        END {
+            if (nr == 0) {
+                printf "%6d\n", 0;
+            } else {
+                cmp_ratio = 0;
+                if (nr_cmp > 0) {
+                    cmp_ratio = 100*(sum_cmp_ratio/nr_cmp - 1);
+                }
+                printf "%6d %12.1f%% %12.0f%% %12.2f%%\n",
+                    nr, 100*(sum_msec_ratio/nr - 1), 100*nover/nr, cmp_ratio;
+            }
+        }
+        ' $log
+done

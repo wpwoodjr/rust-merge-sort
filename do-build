@@ -1,0 +1,11 @@
+#!/bin/bash
+[ -z "$3" ] && echo "usage: do-build src-file log-dir log-version [ benchmark-args ]" && exit 1
+f="$1"
+ldir="$2"
+lpostfix="$3"
+shift 3
+#cp src/$f.rs src/newsort.rs
+echo ${ldir}/${f}-${lpostfix}.log
+cargo build --release
+#cargo bloat --release -n 0 | grep ' newsort::'
+time target/release/newsort "$@" >${ldir}/${f}-${lpostfix}.log

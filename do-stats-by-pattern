@@ -1,0 +1,17 @@
+#!/bin/bash
+fg="$1"
+[ -z "$1" ] && fg="00 /"
+
+echo "filter: $fg"
+
+for p in "sawtooth" "rand    " "stagger " "plateau " "shuffle " "strings "
+do
+    echo -en "$p\t\t\t\t\t  nrec     % speedup     is faster     cmp ratio\n"
+    v_print=all
+    for l in $log; do echo -en "  $v_print            $l:   \t"; grep "$fg" $l|grep " $(echo $p) "|./stats -; v_print="   "; done
+    for v in "ident         " "reverse       " "reverse_front " "reverse_back  " "sorted        " "reverse_sorted" "dither        "
+    do
+        v_print=$v
+        for l in $log; do echo -en "  $v_print $l:   \t"; grep "$fg" $l|grep " $(echo $p) [ ]*$(echo $v) "|./stats -; v_print="              "; done
+    done
+done

@@ -1,0 +1,15 @@
+#!/bin/bash
+[ -z "$2" ] && echo "usage: do-all-builds src-file log-dir [ benchmark-args ]" && exit 1
+f="$1"
+ldir="$2"
+shift 2
+for i in i32 i16 i64 i128
+do
+    sed -e "s/i32/$i/" src/main-i32.rs >src/main.rs
+    echo $i
+    ./do-build "$f" "$ldir" "$i" "$@"
+    date
+    [ "$i" != "i128" ] && sleep 300
+done
+rm -f $ldir/$f-all.log
+for i in i16 i32 i64 i128; do cat $ldir/$f-$i.log >>$ldir/$f-all.log; done
