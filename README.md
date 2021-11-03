@@ -3,6 +3,7 @@
 This repo includes all files used for benchmarking a proposed two stage merge sort with pre-sorted prefix optimization, vs Rust's current implementation of TimSort.  The two stages are:
 * Top-down recursive depth-first merge, which helps data locality
 * Small slices sort using a fast insertion sort, then merge
+
 The total running time is *O*(*n* \* log(*n*)) worst-case.
 
 
@@ -140,7 +141,7 @@ strings, not forward sorted:      nrec     % speedup     is faster     cmp ratio
   ressw2/all-ssf-all.log:   	   120          6.6%           78%        -4.33%
 ```
 
-From the above, benchmarking the proposed two stage merge sort vs TimSort indicates a speedup of **10.8%** for random unsorted data, with **95%** of sort runs being faster.  For random sorted data, the results indicate a speedup of **18.4%**, with **91%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which has a slight penalty of **-0.3%**.
+From the above benchmark, the proposed two stage merge sort indicates a speedup of **10.8%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **18.4%**, with **91%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which has a slight penalty of **-0.3%**.  The number of comparisons performed is **-3.41%** less over all tests.
 
 These stats compare results by pattern / variant:
 ```
