@@ -1,4 +1,10 @@
-# Benchmarks for proposed simple merge sort vs std TimSort
+# Benchmarks for proposed two stage merge sort vs std TimSort
+
+This repo includes all files used for benchmarking a proposed two stage merge sort with pre-sorted prefix optimization, vs Rust's current implementation of TimSort.  The two stages are:
+* Top-down recursive depth-first merge, which helps data locality
+* Small slices sort using a fast insertion sort, then merge
+The total running time is *O*(*n* \* log(*n*)) worst-case.
+
 
 This benchmark is based on https://github.com/notriddle/quickersort/blob/master/examples/perf_txt.rs, 
 (C) 2015 Michael Howell <michael@notriddle.com>
@@ -22,7 +28,7 @@ The benchmark was run on six OS's / CPUs:
 * Debian Crostini Linux / Asus Chromebook Flip CX5 Intel(R) 11th Gen Core(TM) i5-1130G7
 * Debian Crostini Linux / HP Chromebook X2 11 Qualcomm(R) Snapdragon(TM) 7c
 
-For each OS/CPU, the benchmark was run on vecs of i16, i32, i64, i128, and string.  The vecs were of random lengths from 0 to 10,000,000.
+For each OS/CPU, the benchmark was run on vecs of `i16`, `i32`, `i64`, `i128`, and `String`.  The vecs were of random lengths from 0 to 10,000,000.
 
 The results were collected in a separate log file for each OS/CPU/vec type combination, and then collected into a single `all` log file for each OS/CPU combination.  For instance, this command and its output, which was run on Ubuntu:
 
@@ -134,7 +140,7 @@ strings, not forward sorted:      nrec     % speedup     is faster     cmp ratio
   ressw2/all-ssf-all.log:   	   120          6.6%           78%        -4.33%
 ```
 
-From the above, benchmarking the proposed merge sort vs TimSort indicates a speedup of **10.8%** for random unsorted data, with **95%** of sort runs being faster.  For random sorted data, the results indicate a speedup of **18.4%**, with **91%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which has a slight penalty of **-0.3%**.
+From the above, benchmarking the proposed two stage merge sort vs TimSort indicates a speedup of **10.8%** for random unsorted data, with **95%** of sort runs being faster.  For random sorted data, the results indicate a speedup of **18.4%**, with **91%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which has a slight penalty of **-0.3%**.
 
 These stats compare results by pattern / variant:
 ```
