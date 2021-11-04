@@ -1114,9 +1114,9 @@ where
         F: FnMut(&T, &T) -> bool,
     {
         let len = v.len();
-	// find length of sorted prefix
+    // find length of sorted prefix
         if sorted == 0 {
-            sorted = 
+            sorted =
                 if len <= 1 {
                     len
                 // strictly descending?
