@@ -903,10 +903,7 @@ where
             // If `is_less` panics at any point during the process, `hole` will get dropped and
             // fill the hole in `v` with `tmp`, thus ensuring that `v` still holds every object it
             // initially held exactly once.
-            let mut hole = InsertionHole {
-                src: &*tmp,
-                dest: v.get_unchecked_mut(end - 1),
-            };
+            let mut hole = InsertionHole { src: &*tmp, dest: v.get_unchecked_mut(end - 1) };
             ptr::copy_nonoverlapping(hole.dest, v.get_unchecked_mut(end), 1);
 
             let mut i = end - 1;
@@ -1074,7 +1071,7 @@ where
             // $is_less(&$v[$right], &$v[$left])
             {
                 debug_assert!($left < $v.len() && $right < $v.len());
-                $is_less(unsafe {&$v.get_unchecked($right)}, unsafe {&$v.get_unchecked($left)})
+                $is_less(unsafe { &$v.get_unchecked($right) }, unsafe { &$v.get_unchecked($left) })
             }
         };
     }
@@ -1103,7 +1100,7 @@ where
     // shallow copies of the contents of `v` without risking the dtors running on copies if
     // `is_less` panics. When merging two slices, this buffer holds a copy of the right-hand slice,
     // which will always have length at most `(len + 1) / 2`.
-    let mut buf = Vec::with_capacity((len + 1)/2);
+    let mut buf = Vec::with_capacity((len + 1) / 2);
     slice_merge_sort(v, 0, buf.as_mut_ptr(), &mut is_less);
 
     // Do a recursive depth-first merge while slice's length is greater than SMALL_SLICE_LEN*2.
@@ -1114,28 +1111,27 @@ where
         F: FnMut(&T, &T) -> bool,
     {
         let len = v.len();
-    // find length of sorted prefix
+        // find length of sorted prefix
         if sorted == 0 {
-            sorted =
-                if len <= 1 {
-                    len
-                // strictly descending?
-                } else if gt!(v, 0, 1, is_less) {
-                    let mut i = 2;
-                    while i < len && gt!(v, i - 1, i, is_less) {
-                        i += 1;
-                    }
-                    // Reverse the slice so we don't have to sort it later.
-                    v[..i].reverse();
-                    i
+            sorted = if len <= 1 {
+                len
+            } else if gt!(v, 0, 1, is_less) {
+                // strictly descending
+                let mut i = 2;
+                while i < len && gt!(v, i - 1, i, is_less) {
+                    i += 1;
+                }
+                // Reverse the slice so we don't have to sort it later.
+                v[..i].reverse();
+                i
+            } else {
                 // ascending
-                } else {
-                    let mut i = 2;
-                    while i < len && ! gt!(v, i - 1, i, is_less) {
-                        i += 1;
-                    }
-                    i
-                };
+                let mut i = 2;
+                while i < len && ! gt!(v, i - 1, i, is_less) {
+                    i += 1;
+                }
+                i
+            };
         }
 
         // Do merge sort, using `sorted` to avoid redundant sorting.
@@ -1146,15 +1142,16 @@ where
                 }
             } else {
                 let mid;
-                if len > SMALL_SLICE_LEN*2 {
-                    mid = sorted.max(len/2);
+                if len > SMALL_SLICE_LEN * 2 {
+                    mid = sorted.max(len / 2);
                     if sorted < mid {
                         slice_merge_sort(&mut v[..mid], sorted, buf_ptr, is_less);
                     }
                     slice_merge_sort(&mut v[mid..], 0, buf_ptr, is_less);
-                    if ! gt!(v, mid - 1, mid, is_less) {
+                    if !gt!(v, mid - 1, mid, is_less) {
                         return;
-                    } else if gt!(v, 0, len - 1, is_less) {  // strictly reverse sorted?
+                    } else if gt!(v, 0, len - 1, is_less) {
+                        // strictly reverse sorted
                         swap_slices(v, mid, buf_ptr);
                         return;
                     }
@@ -1165,7 +1162,7 @@ where
                     for i in SMALL_SLICE_LEN + 1..len {
                         insert_end(&mut v[SMALL_SLICE_LEN..=i], is_less);
                     }
-                    if ! gt!(v, SMALL_SLICE_LEN - 1, SMALL_SLICE_LEN, is_less) {
+                    if !gt!(v, SMALL_SLICE_LEN - 1, SMALL_SLICE_LEN, is_less) {
                         return;
                     }
                     mid = SMALL_SLICE_LEN;
