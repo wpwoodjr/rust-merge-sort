@@ -1127,7 +1127,7 @@ where
             } else {
                 // ascending
                 let mut i = 2;
-                while i < len && ! gt!(v, i - 1, i, is_less) {
+                while i < len && !gt!(v, i - 1, i, is_less) {
                     i += 1;
                 }
                 i
