@@ -114,9 +114,10 @@ fn insert_end<T, F>(v: &mut [T], is_less: &mut F)
 where
     F: FnMut(&T, &T) -> bool,
 {
+    debug_assert!(v.len() >= 2);
     let end = v.len() - 1;
-    if end > 0 && is_less(&v[end], &v[end - 1]) {
-        unsafe {
+    unsafe {
+        if is_less(v.get_unchecked(end), v.get_unchecked(end - 1)) {
             // There are three ways to implement insertion here:
             //
             // 1. Swap adjacent elements until the last one gets to its final destination.
