@@ -4,8 +4,12 @@ This repo includes all files used for benchmarking a proposed two stage merge so
 * Top-down recursive depth-first merge, which helps data locality
 * Small slices sort using a fast insertion sort, then merge
 
-The total running time is *O*(*n* \* log(*n*)) worst-case.
+The new sort benefits from pre-sorted prefix optimization for forward and reverse sorted sub-slices.  The total running time is *O*(*n* \* log(*n*)) worst-case.
 
+## TL;DR
+From the above benchmark, the proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which is about the same.  The number of comparisons performed is **-2.92%** less over all tests.
+
+## Background info
 
 This benchmark is based on https://github.com/notriddle/quickersort/blob/master/examples/perf_txt.rs, 
 (C) 2015 Michael Howell <michael@notriddle.com>
@@ -20,6 +24,8 @@ Updates to the benchmark include:
 * add "reverse sorted" variant
 * add parallel sort option
 * call stdsort from a module or from lib-std
+
+## How the becnhmark was run
 
 The benchmark was run on six OS's / CPUs:
 * Ubuntu 20.04.3 LTS / Intel(R) Core(TM) i7-8559U CPU @ 2.70GHz
@@ -103,6 +109,8 @@ $ ls -lat ressw2/ub*
 -rw-rw-r-- 1 wpwoodjr wpwoodjr 201886 Oct 26 14:49 ressw2/ub-ssf-i32.log
 ```
 
+## Results
+
 After running the benchmark on all OS/CPUs, the OS/CPU `all` files were collected into one big `all` file and statistics run as follows:
 ```
 $ log=ressw2/all* ./do-stats
@@ -141,7 +149,7 @@ strings, not forward sorted:      nrec     % speedup     is faster     cmp ratio
   ressw2/all-ssf-all.log:   	   120          6.6%           78%        -4.33%
 ```
 
-From the above benchmark, the proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which about the same.  The number of comparisons performed is **-2.92%** less over all tests.
+From the above benchmark, the proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which is about the same.  The number of comparisons performed is **-2.92%** less over all tests.
 
 These stats compare results by pattern / variant:
 ```
