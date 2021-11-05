@@ -105,34 +105,34 @@ $ ls -lat ressw2/ub*
 
 After running the benchmark on all OS/CPUs, the OS/CPU `all` files were collected into one big `all` file and statistics run as follows:
 ```
-$ log="ressw2/all*" ./do-stats
-filter: 00 /
+$ log=ressw2/all* ./do-stats
+filter: /
 all                               nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	 29544         31.9%           78%        -3.41%
+  ressw2/all-ssf-all.log:   	 34584         33.1%           80%        -2.92%
 
 forward sorted                    nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	  4224         28.0%           85%         0.00%
+  ressw2/all-ssf-all.log:   	  4944         30.5%           87%         0.00%
 
 not forward sorted or plateau     nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	 20280         12.1%           76%        -0.89%
+  ressw2/all-ssf-all.log:   	 23736         14.4%           78%        -0.15%
 
 reverse sorted:                   nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	  4224         62.3%           85%       -14.07%
+  ressw2/all-ssf-all.log:   	  4944         62.6%           87%       -14.27%
 
 rand                              nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	  5880         18.4%           91%        -2.65%
+  ressw2/all-ssf-all.log:   	  6888         20.2%           92%        -2.14%
 
 rand, not forw/rev sorted:        nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	  4200         10.8%           95%        -0.99%
+  ressw2/all-ssf-all.log:   	  4920         13.1%           95%        -0.67%
 
 shuffle ident:                    nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	   840          8.5%           67%        -0.22%
+  ressw2/all-ssf-all.log:   	   984         11.4%           70%         0.80%
 
 sawtooth ident:                   nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	   840         -0.3%           41%         5.91%
+  ressw2/all-ssf-all.log:   	   984          3.9%           49%         4.76%
 
 stagger ident:                    nrec     % speedup     is faster     cmp ratio
-  ressw2/all-ssf-all.log:   	   840          6.2%           74%         1.93%
+  ressw2/all-ssf-all.log:   	   984          7.6%           75%         3.40%
 
 strings:                          nrec     % speedup     is faster     cmp ratio
   ressw2/all-ssf-all.log:   	   144          6.6%           78%        -3.61%
@@ -141,58 +141,58 @@ strings, not forward sorted:      nrec     % speedup     is faster     cmp ratio
   ressw2/all-ssf-all.log:   	   120          6.6%           78%        -4.33%
 ```
 
-From the above benchmark, the proposed two stage merge sort indicates a speedup of **10.8%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **18.4%**, with **91%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which has a slight penalty of **-0.3%**.  The number of comparisons performed is **-3.41%** less over all tests.
+From the above benchmark, the proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which about the same.  The number of comparisons performed is **-2.92%** less over all tests.
 
 These stats compare results by pattern / variant:
 ```
-$ log="ressw2/all*" ./do-stats-by-pattern
-filter: 00 /
-sawtooth                                      nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  5880         12.4%           63%         1.31%
-  ident          ressw2/all-ssf-all.log:   	   840         -0.3%           41%         5.91%
-  reverse        ressw2/all-ssf-all.log:   	   840         -3.6%           37%         8.60%
-  reverse_front  ressw2/all-ssf-all.log:   	   840         12.4%           47%         0.62%
-  reverse_back   ressw2/all-ssf-all.log:   	   840          0.6%           47%         4.03%
-  sorted         ressw2/all-ssf-all.log:   	   840         28.1%           86%         0.00%
-  reverse_sorted ressw2/all-ssf-all.log:   	   840         38.8%           87%        -8.78%
-  dither         ressw2/all-ssf-all.log:   	   840         10.9%           94%        -1.21%
-rand                                          nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  5880         18.4%           91%        -2.65%
-  ident          ressw2/all-ssf-all.log:   	   840         10.5%           94%        -1.07%
-  reverse        ressw2/all-ssf-all.log:   	   840         10.8%           94%        -0.94%
-  reverse_front  ressw2/all-ssf-all.log:   	   840         10.9%           95%        -0.90%
-  reverse_back   ressw2/all-ssf-all.log:   	   840         10.8%           95%        -1.03%
-  sorted         ressw2/all-ssf-all.log:   	   840         27.2%           83%         0.00%
-  reverse_sorted ressw2/all-ssf-all.log:   	   840         47.2%           80%       -13.60%
-  dither         ressw2/all-ssf-all.log:   	   840         11.2%           95%        -1.03%
-stagger                                       nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  5880         12.1%           81%         0.37%
-  ident          ressw2/all-ssf-all.log:   	   840          6.2%           74%         1.93%
-  reverse        ressw2/all-ssf-all.log:   	   840          7.0%           77%         1.42%
-  reverse_front  ressw2/all-ssf-all.log:   	   840          7.0%           76%         0.90%
-  reverse_back   ressw2/all-ssf-all.log:   	   840          8.4%           85%         0.65%
-  sorted         ressw2/all-ssf-all.log:   	   840         28.7%           85%         0.00%
-  reverse_sorted ressw2/all-ssf-all.log:   	   840         17.4%           79%        -3.37%
-  dither         ressw2/all-ssf-all.log:   	   840         10.2%           92%         1.05%
-plateau                                       nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  5880        102.6%           81%       -14.05%
-  ident          ressw2/all-ssf-all.log:   	   840         23.4%           79%         2.19%
-  reverse        ressw2/all-ssf-all.log:   	   840        191.9%           93%       -39.06%
-  reverse_front  ressw2/all-ssf-all.log:   	   840        265.4%           97%       -40.65%
-  reverse_back   ressw2/all-ssf-all.log:   	   840         19.9%           79%         2.34%
-  sorted         ressw2/all-ssf-all.log:   	   840         28.5%           85%         0.00%
-  reverse_sorted ressw2/all-ssf-all.log:   	   840        195.4%           98%       -40.15%
-  dither         ressw2/all-ssf-all.log:   	   840         -6.0%           35%        17.01%
-shuffle                                       nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  5880         14.6%           73%        -2.02%
-  ident          ressw2/all-ssf-all.log:   	   840          8.5%           67%        -0.22%
-  reverse        ressw2/all-ssf-all.log:   	   840          6.1%           60%        -2.90%
-  reverse_front  ressw2/all-ssf-all.log:   	   840         29.2%           70%        -6.38%
-  reverse_back   ressw2/all-ssf-all.log:   	   840          5.5%           59%         0.49%
-  sorted         ressw2/all-ssf-all.log:   	   840         28.2%           84%         0.00%
-  reverse_sorted ressw2/all-ssf-all.log:   	   840         14.0%           79%        -4.54%
-  dither         ressw2/all-ssf-all.log:   	   840         10.5%           94%        -0.58%
-strings                                       nrec     % speedup     is faster     cmp ratio
+$ log=ressw2/all* ./do-stats-by-pattern 
+filter: /
+sawtooth                                          nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  6888         15.4%           68%         1.76%
+  ident          ressw2/all-ssf-all.log:   	   984          3.9%           49%         4.76%
+  reverse        ressw2/all-ssf-all.log:   	   984         -0.5%           44%        11.76%
+  reverse_front  ressw2/all-ssf-all.log:   	   984         14.0%           54%         2.07%
+  reverse_back   ressw2/all-ssf-all.log:   	   984          4.2%           54%         4.04%
+  sorted         ressw2/all-ssf-all.log:   	   984         30.6%           88%         0.00%
+  reverse_sorted ressw2/all-ssf-all.log:   	   984         42.3%           89%        -9.85%
+  dither         ressw2/all-ssf-all.log:   	   984         13.4%           95%        -0.47%
+rand                                              nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  6888         20.2%           92%        -2.14%
+  ident          ressw2/all-ssf-all.log:   	   984         12.9%           95%        -0.73%
+  reverse        ressw2/all-ssf-all.log:   	   984         13.1%           95%        -0.63%
+  reverse_front  ressw2/all-ssf-all.log:   	   984         13.3%           95%        -0.87%
+  reverse_back   ressw2/all-ssf-all.log:   	   984         12.8%           95%        -0.36%
+  sorted         ressw2/all-ssf-all.log:   	   984         29.7%           86%         0.00%
+  reverse_sorted ressw2/all-ssf-all.log:   	   984         45.9%           82%       -11.61%
+  dither         ressw2/all-ssf-all.log:   	   984         13.5%           96%        -0.77%
+stagger                                           nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  6888         14.2%           82%         1.15%
+  ident          ressw2/all-ssf-all.log:   	   984          7.6%           75%         3.40%
+  reverse        ressw2/all-ssf-all.log:   	   984          8.3%           78%         2.26%
+  reverse_front  ressw2/all-ssf-all.log:   	   984          8.6%           77%         2.63%
+  reverse_back   ressw2/all-ssf-all.log:   	   984         10.3%           86%         0.60%
+  sorted         ressw2/all-ssf-all.log:   	   984         31.2%           88%         0.00%
+  reverse_sorted ressw2/all-ssf-all.log:   	   984         21.5%           82%        -3.11%
+  dither         ressw2/all-ssf-all.log:   	   984         11.8%           91%         2.29%
+plateau                                           nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  6888         99.0%           83%       -14.15%
+  ident          ressw2/all-ssf-all.log:   	   984         26.5%           82%         1.87%
+  reverse        ressw2/all-ssf-all.log:   	   984        183.4%           94%       -40.39%
+  reverse_front  ressw2/all-ssf-all.log:   	   984        245.3%           97%       -38.97%
+  reverse_back   ressw2/all-ssf-all.log:   	   984         23.6%           82%         2.00%
+  sorted         ressw2/all-ssf-all.log:   	   984         30.9%           87%         0.00%
+  reverse_sorted ressw2/all-ssf-all.log:   	   984        186.3%           98%       -41.32%
+  dither         ressw2/all-ssf-all.log:   	   984         -3.1%           39%        17.73%
+shuffle                                           nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  6888         17.2%           76%        -1.21%
+  ident          ressw2/all-ssf-all.log:   	   984         11.4%           70%         0.80%
+  reverse        ressw2/all-ssf-all.log:   	   984          8.4%           63%        -0.42%
+  reverse_front  ressw2/all-ssf-all.log:   	   984         30.9%           74%        -4.91%
+  reverse_back   ressw2/all-ssf-all.log:   	   984          8.4%           64%         1.39%
+  sorted         ressw2/all-ssf-all.log:   	   984         30.6%           87%         0.00%
+  reverse_sorted ressw2/all-ssf-all.log:   	   984         18.0%           82%        -5.53%
+  dither         ressw2/all-ssf-all.log:   	   984         12.5%           95%         0.19%
+strings                                           nrec     % speedup     is faster     cmp ratio
   all            ressw2/all-ssf-all.log:   	   144          6.6%           78%        -3.61%
   ident          ressw2/all-ssf-all.log:   	    24          4.8%           83%        -2.96%
   reverse        ressw2/all-ssf-all.log:   	    24          3.0%           71%        -2.45%
@@ -205,62 +205,62 @@ strings                                       nrec     % speedup     is faster  
 
 These stats compare results by variant / pattern:
 ```
-$ log="ressw2/all*" ./do-stats-by-variant
-filter: 00 /
-ident                                         nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224          9.6%           71%         1.72%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         -0.3%           41%         5.91%
-  rand           ressw2/all-ssf-all.log:   	   840         10.5%           94%        -1.07%
-  stagger        ressw2/all-ssf-all.log:   	   840          6.2%           74%         1.93%
-  plateau        ressw2/all-ssf-all.log:   	   840         23.4%           79%         2.19%
-  shuffle        ressw2/all-ssf-all.log:   	   840          8.5%           67%        -0.22%
+$ log=ressw2/all* ./do-stats-by-variant 
+filter: /
+ident                                             nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         12.4%           74%         2.00%
+  sawtooth       ressw2/all-ssf-all.log:   	   984          3.9%           49%         4.76%
+  rand           ressw2/all-ssf-all.log:   	   984         12.9%           95%        -0.73%
+  stagger        ressw2/all-ssf-all.log:   	   984          7.6%           75%         3.40%
+  plateau        ressw2/all-ssf-all.log:   	   984         26.5%           82%         1.87%
+  shuffle        ressw2/all-ssf-all.log:   	   984         11.4%           70%         0.80%
   strings        ressw2/all-ssf-all.log:   	    24          4.8%           83%        -2.96%
-reverse                                       nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224         42.2%           72%        -6.55%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         -3.6%           37%         8.60%
-  rand           ressw2/all-ssf-all.log:   	   840         10.8%           94%        -0.94%
-  stagger        ressw2/all-ssf-all.log:   	   840          7.0%           77%         1.42%
-  plateau        ressw2/all-ssf-all.log:   	   840        191.9%           93%       -39.06%
-  shuffle        ressw2/all-ssf-all.log:   	   840          6.1%           60%        -2.90%
+reverse                                           nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         42.4%           75%        -5.47%
+  sawtooth       ressw2/all-ssf-all.log:   	   984         -0.5%           44%        11.76%
+  rand           ressw2/all-ssf-all.log:   	   984         13.1%           95%        -0.63%
+  stagger        ressw2/all-ssf-all.log:   	   984          8.3%           78%         2.26%
+  plateau        ressw2/all-ssf-all.log:   	   984        183.4%           94%       -40.39%
+  shuffle        ressw2/all-ssf-all.log:   	   984          8.4%           63%        -0.42%
   strings        ressw2/all-ssf-all.log:   	    24          3.0%           71%        -2.45%
-reverse_front                                 nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224         64.6%           77%        -9.25%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         12.4%           47%         0.62%
-  rand           ressw2/all-ssf-all.log:   	   840         10.9%           95%        -0.90%
-  stagger        ressw2/all-ssf-all.log:   	   840          7.0%           76%         0.90%
-  plateau        ressw2/all-ssf-all.log:   	   840        265.4%           97%       -40.65%
-  shuffle        ressw2/all-ssf-all.log:   	   840         29.2%           70%        -6.38%
+reverse_front                                     nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         62.1%           79%        -7.99%
+  sawtooth       ressw2/all-ssf-all.log:   	   984         14.0%           54%         2.07%
+  rand           ressw2/all-ssf-all.log:   	   984         13.3%           95%        -0.87%
+  stagger        ressw2/all-ssf-all.log:   	   984          8.6%           77%         2.63%
+  plateau        ressw2/all-ssf-all.log:   	   984        245.3%           97%       -38.97%
+  shuffle        ressw2/all-ssf-all.log:   	   984         30.9%           74%        -4.91%
   strings        ressw2/all-ssf-all.log:   	    24          3.4%           67%        -3.68%
-reverse_back                                  nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224          9.0%           73%         1.28%
-  sawtooth       ressw2/all-ssf-all.log:   	   840          0.6%           47%         4.03%
-  rand           ressw2/all-ssf-all.log:   	   840         10.8%           95%        -1.03%
-  stagger        ressw2/all-ssf-all.log:   	   840          8.4%           85%         0.65%
-  plateau        ressw2/all-ssf-all.log:   	   840         19.9%           79%         2.34%
-  shuffle        ressw2/all-ssf-all.log:   	   840          5.5%           59%         0.49%
+reverse_back                                      nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         11.8%           76%         1.52%
+  sawtooth       ressw2/all-ssf-all.log:   	   984          4.2%           54%         4.04%
+  rand           ressw2/all-ssf-all.log:   	   984         12.8%           95%        -0.36%
+  stagger        ressw2/all-ssf-all.log:   	   984         10.3%           86%         0.60%
+  plateau        ressw2/all-ssf-all.log:   	   984         23.6%           82%         2.00%
+  shuffle        ressw2/all-ssf-all.log:   	   984          8.4%           64%         1.39%
   strings        ressw2/all-ssf-all.log:   	    24          1.2%           71%        -1.07%
-sorted                                        nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224         28.0%           85%         0.00%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         28.1%           86%         0.00%
-  rand           ressw2/all-ssf-all.log:   	   840         27.2%           83%         0.00%
-  stagger        ressw2/all-ssf-all.log:   	   840         28.7%           85%         0.00%
-  plateau        ressw2/all-ssf-all.log:   	   840         28.5%           85%         0.00%
-  shuffle        ressw2/all-ssf-all.log:   	   840         28.2%           84%         0.00%
+sorted                                            nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         30.5%           87%         0.00%
+  sawtooth       ressw2/all-ssf-all.log:   	   984         30.6%           88%         0.00%
+  rand           ressw2/all-ssf-all.log:   	   984         29.7%           86%         0.00%
+  stagger        ressw2/all-ssf-all.log:   	   984         31.2%           88%         0.00%
+  plateau        ressw2/all-ssf-all.log:   	   984         30.9%           87%         0.00%
+  shuffle        ressw2/all-ssf-all.log:   	   984         30.6%           87%         0.00%
   strings        ressw2/all-ssf-all.log:   	    24          6.4%           79%         0.00%
-reverse_sorted                                nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4224         62.3%           85%       -14.07%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         38.8%           87%        -8.78%
-  rand           ressw2/all-ssf-all.log:   	   840         47.2%           80%       -13.60%
-  stagger        ressw2/all-ssf-all.log:   	   840         17.4%           79%        -3.37%
-  plateau        ressw2/all-ssf-all.log:   	   840        195.4%           98%       -40.15%
-  shuffle        ressw2/all-ssf-all.log:   	   840         14.0%           79%        -4.54%
+reverse_sorted                                    nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4944         62.6%           87%       -14.27%
+  sawtooth       ressw2/all-ssf-all.log:   	   984         42.3%           89%        -9.85%
+  rand           ressw2/all-ssf-all.log:   	   984         45.9%           82%       -11.61%
+  stagger        ressw2/all-ssf-all.log:   	   984         21.5%           82%        -3.11%
+  plateau        ressw2/all-ssf-all.log:   	   984        186.3%           98%       -41.32%
+  shuffle        ressw2/all-ssf-all.log:   	   984         18.0%           82%        -5.53%
   strings        ressw2/all-ssf-all.log:   	    24         20.7%          100%       -11.48%
-dither                                        nrec     % speedup     is faster     cmp ratio
-  all            ressw2/all-ssf-all.log:   	  4200          7.4%           82%         3.05%
-  sawtooth       ressw2/all-ssf-all.log:   	   840         10.9%           94%        -1.21%
-  rand           ressw2/all-ssf-all.log:   	   840         11.2%           95%        -1.03%
-  stagger        ressw2/all-ssf-all.log:   	   840         10.2%           92%         1.05%
-  plateau        ressw2/all-ssf-all.log:   	   840         -6.0%           35%        17.01%
-  shuffle        ressw2/all-ssf-all.log:   	   840         10.5%           94%        -0.58%
+dither                                            nrec     % speedup     is faster     cmp ratio
+  all            ressw2/all-ssf-all.log:   	  4920          9.6%           83%         3.79%
+  sawtooth       ressw2/all-ssf-all.log:   	   984         13.4%           95%        -0.47%
+  rand           ressw2/all-ssf-all.log:   	   984         13.5%           96%        -0.77%
+  stagger        ressw2/all-ssf-all.log:   	   984         11.8%           91%         2.29%
+  plateau        ressw2/all-ssf-all.log:   	   984         -3.1%           39%        17.73%
+  shuffle        ressw2/all-ssf-all.log:   	   984         12.5%           95%         0.19%
   strings        ressw2/all-ssf-all.log:   	     0
 ```

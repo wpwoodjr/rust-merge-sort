@@ -1,6 +1,6 @@
 #!/bin/bash
 fg="$1"
-[ -z "$1" ] && fg="00 /"
+[ -z "$1" ] && fg="/"
 
 echo "filter: $fg"
 

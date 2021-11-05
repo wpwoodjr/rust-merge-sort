@@ -421,7 +421,9 @@ where
     /// # Safety
     ///
     /// `buf_ptr` must point to a slice of `buf` which is long enough to hold `v[mid..]`
+    /// v.len() >= mid because `swap_slices` is only called when: sorted < len && mid == sorted.max(len / 2)
     fn swap_slices<T>(v: &mut [T], mid: usize, buf_ptr: *mut T) {
+        debug_assert!(v.len() >= mid);
         let rlen = v.len() - mid;
         let v_ptr = v.as_mut_ptr();
         unsafe {
