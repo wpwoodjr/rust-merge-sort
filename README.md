@@ -7,7 +7,7 @@ This repo includes all files used for benchmarking a proposed two stage merge so
 The new sort benefits from pre-sorted prefix optimization for forward and reverse sorted sub-slices.  The total running time is *O*(*n* \* log(*n*)) worst-case.
 
 ## TL;DR
-From the above benchmark, the proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which is about the same.  The number of comparisons performed is **-2.92%** less over all tests.
+The proposed two stage merge sort indicates a speedup of **13.1%** for random unsorted data, with **95%** of sort runs being faster.  For random data, including unsorted and forward / reverse sorted variants, the results indicate a speedup of **20.2%**, with **92%** of sort runs being faster.  Other data patterns are faster too, except for the `sawtooth` pattern, which is about the same.  The number of comparisons performed is **-2.92%** less over all tests.
 
 ## Background info
 
