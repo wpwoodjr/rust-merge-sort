@@ -411,7 +411,9 @@ where
                     }
                     mid = SMALL_SLICE_LEN;
                 }
-                unsafe { merge(v, mid, buf_ptr, is_less); }
+                unsafe {
+                    merge(v, mid, buf_ptr, is_less);
+                }
             }
         }
     }
