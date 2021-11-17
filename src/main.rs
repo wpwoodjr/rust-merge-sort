@@ -136,7 +136,7 @@ impl Display for Variant {
     }
 }
 
-fn generate_int(pattern: Pattern, variant: Variant, size: usize, rand_size: bool, m: usize, test_type: TestType, run: usize) -> Vec<i128> {
+fn generate_int(pattern: Pattern, variant: Variant, size: usize, rand_size: bool, m: usize, test_type: TestType, run: usize) -> Vec<i32> {
     use rand::prelude::*;
     let mut rng =
         if let TestType::BenchMark = test_type {
@@ -155,7 +155,7 @@ fn generate_int(pattern: Pattern, variant: Variant, size: usize, rand_size: bool
             Pattern::Stagger => (i*m + i) % size,
             Pattern::Plateau => min(i, m),
             Pattern::Shuffle => if rng.gen::<usize>() % m == 0 { j+=2; j } else { k += 2; k },
-        } as i128);
+        } as i32);
     }
     match variant {
         Variant::Ident => (),
@@ -405,7 +405,7 @@ fn main() {
             }
         }
 
-        // i128 sort test
+        // i32 sort test
         for size_pow in min.get()..=max.get() {
             let size = 10_usize.pow(size_pow);
             if let TestType::BenchMark = test_type {
