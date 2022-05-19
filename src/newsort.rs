@@ -286,7 +286,8 @@ where
         fn drop(&mut self) {
             // `T` is not a zero-sized type, and these are pointers into a slice's elements.
             unsafe {
-                let len = self.end.sub_ptr(self.start);
+                // let len = self.end.sub_ptr(self.start); !!!!!!!!!!!!!!!!!!!
+                let len = self.end.offset_from(self.start) as usize;
                 ptr::copy_nonoverlapping(self.start, self.dest, len);
             }
         }
@@ -410,8 +411,17 @@ where
                     }
                     mid = SMALL_SLICE_LEN;
                 }
+                // heuristic optimization, don't merge beginning of v if its <= v[mid]
+                let (mut start, mut i) = (0, 8);
+                while i < mid && !gt!(v, i, mid, is_less) {
+                    start = i + 1;
+                    i *= 2;
+                }
+                // while start + 1 < mid && !gt!(v, start + 1, mid, is_less) {
+                //     start += 1;
+                // }
                 unsafe {
-                    merge(v, mid, buf_ptr, is_less);
+                    merge(&mut v[start..], mid - start, buf_ptr, is_less);
                 }
             }
         }
