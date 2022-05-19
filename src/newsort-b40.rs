@@ -212,31 +212,30 @@ where
 
     if mid <= len - mid {
         // left.len() <= right.len()
-        let mut right = unsafe {
-            if is_less(&*v_mid, &*v) {
-                // v[mid] < v[0]; find offset from v[mid] to insert v[0]
-                let offset = binary_search_l(v_mid.add(1), len - mid - 1, v, is_less) + 1;
-                // save v[..mid] to buf
-                ptr::copy_nonoverlapping(v, buf, mid);
-                // copy v[mid..mid + offset] to v[0]
-                ptr::copy_nonoverlapping(v_mid, v, offset);
-                // copy original v[0] to v[offset]
-                ptr::copy_nonoverlapping(buf, v.add(offset), 1);
-                hole = MergeHole { start: buf.add(1), end: buf.add(mid), dest: v.add(offset + 1) };
-                v_mid.add(offset)
-            } else {
-                // v[0] <= v[mid]; find offset from v[0] to insert v[mid]
-                let offset = binary_search_r(v.add(1), mid - 1, v_mid, is_less) + 1;
-                // save v[offset..mid] to buf, leaving v[0..offset] intact
-                ptr::copy_nonoverlapping(v.add(offset), buf, mid - offset);
-                // copy v[mid] to v[offset]
-                ptr::copy_nonoverlapping(v_mid, v.add(offset), 1);
-                hole = MergeHole { start: buf, end: buf.add(mid - offset), dest: v.add(offset + 1) };
-                v_mid.add(1)
+        let (lstart, rstart) = if len >= 40 {
+            unsafe {
+                if is_less(&*v_mid, &*v) {
+                    // v_mid < v
+                    (0, binary_search_l(v_mid.add(1), len - mid - 1, v, is_less) + 1)
+                } else {
+                    // v_mid >= v
+                    (binary_search_r(v.add(1), mid - 1, v_mid, is_less) + 1, 0)
+                }
             }
+        } else {
+            (0, 0)
         };
 
+        unsafe {
+            ptr::copy_nonoverlapping(v.add(lstart), buf, mid - lstart);
+            if rstart > 0 {
+                ptr::copy_nonoverlapping(v_mid, v, rstart);
+            }
+            hole = MergeHole { start: buf, end: buf.add(mid - lstart), dest: v.add(lstart + rstart) };
+        }
+
         let left = &mut hole.start;
+        let mut right = v_mid.add(rstart);
         let out = &mut hole.dest;
 
         while *left < hole.end && right < v_end {
